@@ -1,0 +1,18 @@
+{
+  "experiment": "Experiment 1",
+  "model_name": "google/embeddinggemma-300m",
+  "model_short_name": "embeddinggemma_300m",
+  "is_control": false,
+  "embedding_dim": 768,
+  "max_seq_length": 512,
+  "num_queries": 200,
+  "num_corpus": 1500,
+  "index_time_seconds": 605.36,
+  "query_latency_ms": 709.81,
+  "timestamp": "2026-09-24T19:00:51.529186+00:00",
+  "ndcg_at_10": 0.8644571978639024,
+  "mrr": 0.8471386680748043,
+  "recall_at_10": 0.925,
+  "recall_at_100": 0.975,
+  "recall_at_1000": 0.99
+}

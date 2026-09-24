@@ -1,0 +1,40 @@
+# Experiment 1 Candidate Models Configuration
+# Defines candidate embedding models for retrieval comparison on CoIR/Apps.
+
+models:
+  - name: "intfloat/e5-base-v2"
+    short_name: "e5_base_v2"
+    load_path: "intfloat/e5-base-v2"
+    embedding_dim: 768
+    max_seq_length: 512
+    batch_size: 32
+    trust_remote_code: false
+    query_prefix: "query: "
+    passage_prefix: "passage: "
+    is_control: true
+    notes: "Baseline control model; uses query:/passage: asymmetric prefixes."
+
+  - name: "jina-embeddings-v2-base-code"
+    short_name: "jina_code"
+    load_path: "jinaai/jina-embeddings-v2-base-code"
+    embedding_dim: 768
+    max_seq_length: 512
+    batch_size: 16
+    trust_remote_code: true
+    query_prefix: ""
+    passage_prefix: ""
+    is_control: false
+    notes: "Code-specific bi-encoder with ALiBi; max sequence length aligned to 512 for fair CPU evaluation."
+
+  - name: "google/embeddinggemma-300m"
+    short_name: "embeddinggemma_300m"
+    load_path: "google/embeddinggemma-300m"
+    fallback_load_path: "RedHatAI/embeddinggemma-300m"
+    embedding_dim: 768
+    max_seq_length: 512
+    batch_size: 16
+    trust_remote_code: false
+    query_prefix: "task: search result | query: "
+    passage_prefix: "title: none | text: "
+    is_control: false
+    notes: "Multilingual 300M model based on Gemma 3; uses task-specific query and title-prefixed document prompts."
