@@ -69,10 +69,12 @@ def run_evaluation(
     test_scores = result_dict.get("scores", {}).get("test", [])
     ndcg_10 = None
     mrr = None
+    recall_10 = None
     if test_scores and isinstance(test_scores, list):
         score_data = test_scores[0]
         ndcg_10 = score_data.get("ndcg_at_10")
         mrr = score_data.get("mrr_at_10") or score_data.get("mrr")
+        recall_10 = score_data.get("recall_at_10")
 
     logger.info("==========================================")
     logger.info("EXPERIMENT 0 BASELINE RESULTS:")
@@ -80,11 +82,12 @@ def run_evaluation(
     logger.info("Model: %s", model_name)
     logger.info("NDCG@10: %s", f"{ndcg_10:.4f}" if ndcg_10 is not None else "N/A")
     logger.info("MRR: %s", f"{mrr:.4f}" if mrr is not None else "N/A")
+    logger.info("Recall@10: %s", f"{recall_10:.4f}" if recall_10 is not None else "N/A")
     logger.info("Elapsed time: %.2fs", elapsed_time)
     logger.info("==========================================")
 
     # Update RESULTS.md
-    update_results_md(results_md_path, model_name, ndcg_10, mrr, elapsed_time)
+    update_results_md(results_md_path, model_name, ndcg_10, mrr, recall_10, elapsed_time)
 
     return result_dict
 
@@ -94,6 +97,7 @@ def update_results_md(
     model_name: str,
     ndcg_10: float | None,
     mrr: float | None,
+    recall_10: float | None,
     elapsed_seconds: float,
 ) -> None:
     path = Path(results_path)
@@ -101,14 +105,15 @@ def update_results_md(
 
     ndcg_str = f"{ndcg_10:.4f}" if ndcg_10 is not None else "N/A"
     mrr_str = f"{mrr:.4f}" if mrr is not None else "N/A"
+    recall_str = f"{recall_10:.4f}" if recall_10 is not None else "N/A"
     latency_str = f"{elapsed_seconds:.1f}s"
 
     content = (
         "# Experiment Results Log\n\n"
         "Tracking all iterations against the Experiment 0 floor as mandated by the project architecture.\n\n"
-        "| Exp # | Hypothesis / Description | Model | NDCG@10 | MRR | Latency | Status |\n"
-        "|:---:|:---|:---|:---:|:---:|:---:|:---:|\n"
-        f"| **0** | Baseline: e5-base-v2, exact cosine retrieval, no preprocessing | `{model_name}` | **{ndcg_str}** | **{mrr_str}** | {latency_str} | Completed |\n"
+        "| Exp # | Hypothesis / Description | Model | NDCG@10 | MRR | Recall@10 | Latency | Status |\n"
+        "|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|\n"
+        f"| **0** | Baseline: e5-base-v2, exact cosine retrieval, no preprocessing | `{model_name}` | **{ndcg_str}** | **{mrr_str}** | **{recall_str}** | {latency_str} | Completed |\n"
     )
 
     with open(path, "w", encoding="utf-8") as f:
