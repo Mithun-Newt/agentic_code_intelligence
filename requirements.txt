@@ -1,0 +1,8 @@
+# Core dependencies for Experiment 0 (Baseline)
+torch>=2.0.0
+sentence-transformers>=3.0.0
+mteb>=2.0.0
+faiss-cpu>=1.7.0
+numpy>=1.24.0
+pytest>=8.0.0
+tqdm>=4.66.0
