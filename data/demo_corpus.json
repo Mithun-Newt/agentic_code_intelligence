@@ -1,0 +1,92 @@
+[
+  {
+    "id": "doc_binary_search",
+    "title": "Binary Search Algorithm",
+    "text": "def binary_search(arr: list[int], target: int) -> int:\n    \"\"\"Perform binary search on a sorted integer array.\n    \n    Returns the 0-based index of target if found, else -1.\n    \"\"\"\n    low, high = 0, len(arr) - 1\n    while low <= high:\n        mid = (low + high) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1",
+    "category": "Searching Algorithms"
+  },
+  {
+    "id": "doc_dfs_graph",
+    "title": "Depth First Search (DFS) Traversal",
+    "text": "def dfs(graph: dict[str, list[str]], start_node: str, visited: set[str] | None = None) -> list[str]:\n    \"\"\"Traverse an unweighted graph using depth-first search (DFS).\n    \n    Returns a list of visited nodes in order of discovery.\n    \"\"\"\n    if visited is None:\n        visited = set()\n    traversal = [start_node]\n    visited.add(start_node)\n    for neighbor in graph.get(start_node, []):\n        if neighbor not in visited:\n            traversal.extend(dfs(graph, neighbor, visited))\n    return traversal",
+    "category": "Graph Algorithms"
+  },
+  {
+    "id": "doc_bfs_graph",
+    "title": "Breadth First Search (BFS) Traversal",
+    "text": "from collections import deque\n\ndef bfs(graph: dict[str, list[str]], start_node: str) -> list[str]:\n    \"\"\"Traverse a graph level by level using breadth-first search (BFS).\n    \n    Returns a list of visited node identifiers.\n    \"\"\"\n    visited = {start_node}\n    queue = deque([start_node])\n    order = []\n    while queue:\n        node = queue.popleft()\n        order.append(node)\n        for neighbor in graph.get(node, []):\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)\n    return order",
+    "category": "Graph Algorithms"
+  },
+  {
+    "id": "doc_merge_sort",
+    "title": "Merge Sort Divide-and-Conquer",
+    "text": "def merge_sort(arr: list[int]) -> list[int]:\n    \"\"\"Sort an array of integers in ascending order using merge sort.\n    \n    Complexity: O(n log n) time, O(n) auxiliary space.\n    \"\"\"\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    \n    merged = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            merged.append(left[i])\n            i += 1\n        else:\n            merged.append(right[j])\n            j += 1\n    merged.extend(left[i:])\n    merged.extend(right[j:])\n    return merged",
+    "category": "Sorting Algorithms"
+  },
+  {
+    "id": "doc_quick_sort",
+    "title": "Quick Sort In-Place Partitioning",
+    "text": "def quick_sort(arr: list[int]) -> list[int]:\n    \"\"\"Sort a list using recursive quicksort with middle pivot element.\n    \n    Returns a new sorted list in ascending order.\n    \"\"\"\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quick_sort(left) + middle + quick_sort(right)",
+    "category": "Sorting Algorithms"
+  },
+  {
+    "id": "doc_dijkstra",
+    "title": "Dijkstra Shortest Path with Priority Queue",
+    "text": "import heapq\n\ndef dijkstra(graph: dict[str, list[tuple[str, float]]], start: str) -> dict[str, float]:\n    \"\"\"Compute shortest path distances from start node to all reachable nodes.\n    \n    Graph format: {node: [(neighbor, weight), ...]}\n    \"\"\"\n    distances = {node: float('inf') for node in graph}\n    distances[start] = 0.0\n    pq = [(0.0, start)]\n    \n    while pq:\n        cur_dist, u = heapq.heappop(pq)\n        if cur_dist > distances[u]:\n            continue\n        for v, weight in graph.get(u, []):\n            dist = cur_dist + weight\n            if dist < distances[v]:\n                distances[v] = dist\n                heapq.heappush(pq, (dist, v))\n    return distances",
+    "category": "Graph Algorithms"
+  },
+  {
+    "id": "doc_lru_cache",
+    "title": "LRU Cache Data Structure",
+    "text": "class LRUCache:\n    \"\"\"Least Recently Used (LRU) Cache with O(1) get and put operations.\"\"\"\n    \n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache: dict[int, int] = {}\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        val = self.cache.pop(key)\n        self.cache[key] = val\n        return val\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            self.cache.pop(key)\n        elif len(self.cache) >= self.capacity:\n            oldest = next(iter(self.cache))\n            del self.cache[oldest]\n        self.cache[key] = value",
+    "category": "Data Structures"
+  },
+  {
+    "id": "doc_knapsack_dp",
+    "title": "0/1 Knapsack Dynamic Programming",
+    "text": "def knapsack_01(weights: list[int], values: list[int], capacity: int) -> int:\n    \"\"\"Solve the 0/1 knapsack problem using dynamic programming.\n    \n    Maximizes total value without exceeding weight capacity.\n    \"\"\"\n    n = len(weights)\n    dp = [0] * (capacity + 1)\n    for i in range(n):\n        w, v = weights[i], values[i]\n        for c in range(capacity, w - 1, -1):\n            dp[c] = max(dp[c], dp[c - w] + v)\n    return dp[capacity]",
+    "category": "Dynamic Programming"
+  },
+  {
+    "id": "doc_trie_prefix_tree",
+    "title": "Trie Prefix Tree for String Search",
+    "text": "class TrieNode:\n    def __init__(self):\n        self.children: dict[str, TrieNode] = {}\n        self.is_end_of_word = False\n\nclass Trie:\n    \"\"\"Trie data structure for fast string insertion and prefix search.\"\"\"\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word: str) -> None:\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                node.children[char] = TrieNode()\n            node = node.children[char]\n        node.is_end_of_word = True\n\n    def search(self, word: str) -> bool:\n        node = self.root\n        for char in word:\n            if char not in node.children:\n                return False\n            node = node.children[char]\n        return node.is_end_of_word",
+    "category": "Data Structures"
+  },
+  {
+    "id": "doc_two_sum",
+    "title": "Two Sum Hash Map Lookup",
+    "text": "def two_sum(nums: list[int], target: int) -> list[int]:\n    \"\"\"Find indices of the two numbers in nums that add up to target.\n    \n    O(n) time complexity using a dictionary complement lookup.\n    \"\"\"\n    seen: dict[int, int] = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
+    "category": "Hash Table"
+  },
+  {
+    "id": "doc_levenshtein_distance",
+    "title": "Levenshtein Edit Distance",
+    "text": "def levenshtein_distance(s1: str, s2: str) -> int:\n    \"\"\"Compute the minimum edit distance (insertions, deletions, substitutions).\n    \n    Dynamic programming algorithm in O(m * n) time.\n    \"\"\"\n    m, n = len(s1), len(s2)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    for i in range(m + 1):\n        dp[i][0] = i\n    for j in range(n + 1):\n        dp[0][j] = j\n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            cost = 0 if s1[i - 1] == s2[j - 1] else 1\n            dp[i][j] = min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost)\n    return dp[m][n]",
+    "category": "Dynamic Programming"
+  },
+  {
+    "id": "doc_valid_parentheses",
+    "title": "Valid Parentheses String Matching with Stack",
+    "text": "def is_valid_parentheses(s: str) -> bool:\n    \"\"\"Determine if the input string has valid matching brackets '()[]{}'.\n    \n    Utilizes a stack data structure for LIFO validation.\n    \"\"\"\n    mapping = {')': '(', '}': '{', ']': '['}\n    stack = []\n    for char in s:\n        if char in mapping.values():\n            stack.append(char)\n        elif char in mapping:\n            if not stack or stack.pop() != mapping[char]:\n                return False\n    return len(stack) == 0",
+    "category": "Data Structures"
+  },
+  {
+    "id": "doc_matrix_multiplication",
+    "title": "Matrix Multiplication Algorithm",
+    "text": "def matrix_multiply(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:\n    \"\"\"Multiply two 2D matrices A (m x k) and B (k x n).\n    \n    Returns result matrix of dimensions m x n.\n    \"\"\"\n    m, k, n = len(a), len(a[0]), len(b[0])\n    assert len(b) == k, 'Inner dimensions must match'\n    result = [[0.0] * n for _ in range(m)]\n    for i in range(m):\n        for j in range(n):\n            result[i][j] = sum(a[i][x] * b[x][j] for x in range(k))\n    return result",
+    "category": "Math & Linear Algebra"
+  },
+  {
+    "id": "doc_inorder_traversal",
+    "title": "Binary Tree Inorder Traversal",
+    "text": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val = val\n        self.left = left\n        self.right = right\n\ndef inorder_traversal(root: TreeNode | None) -> list[int]:\n    \"\"\"Return the inorder traversal (Left -> Node -> Right) of a binary tree.\"\"\"\n    result = []\n    def traverse(node):\n        if node:\n            traverse(node.left)\n            result.append(node.val)\n            traverse(node.right)\n    traverse(root)\n    return result",
+    "category": "Tree Data Structures"
+  },
+  {
+    "id": "doc_fibonacci_memoization",
+    "title": "Fibonacci Number with Memoization",
+    "text": "def fibonacci_memo(n: int, memo: dict[int, int] | None = None) -> int:\n    \"\"\"Compute the n-th Fibonacci number in O(n) time using top-down memoization.\"\"\"\n    if memo is None:\n        memo = {0: 0, 1: 1}\n    if n in memo:\n        return memo[n]\n    memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)\n    return memo[n]",
+    "category": "Dynamic Programming"
+  }
+]

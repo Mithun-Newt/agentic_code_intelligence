@@ -33,26 +33,77 @@ class PrePostPipelineEncoder(SentenceTransformerEncoderWrapper):
         model_prompts: dict[str, str] | None = None,
         **kwargs: Any,
     ) -> None:
-        # Default E5 prefixes: queries use 'query: ', documents/code use 'passage: '
-        prompts = model_prompts or {
-            "query": "query: ",
-            "document": "passage: ",
-        }
-        super().__init__(
-            model=model_name,
-            device=device,
-            model_prompts=prompts,
-            **kwargs,
-        )
         self.model_name = model_name
+
+        # Determine prompt format if not explicitly provided
+        if model_prompts is not None:
+            prompts = model_prompts
+        elif "embeddinggemma" in model_name:
+            prompts = {
+                "query": "task: search result | query: ",
+                "document": "title: none | text: ",
+            }
+        elif "e5" in model_name:
+            prompts = {
+                "query": "query: ",
+                "document": "passage: ",
+            }
+        else:
+            prompts = None
+
+        # Load underlying SentenceTransformer instance with fallback for gated models
+        if isinstance(model_name, str) and "embeddinggemma" in model_name:
+            try:
+                st_model = SentenceTransformer(
+                    model_name,
+                    device=device,
+                    trust_remote_code=kwargs.pop("trust_remote_code", False),
+                )
+            except Exception as e:
+                logger.info("Primary load of %s failed (%s). Using RedHatAI mirror.", model_name, e)
+                st_model = SentenceTransformer(
+                    "RedHatAI/embeddinggemma-300m",
+                    device=device,
+                    trust_remote_code=kwargs.pop("trust_remote_code", False),
+                )
+            super().__init__(
+                model=st_model,
+                device=device,
+                model_prompts=prompts,
+                **kwargs,
+            )
+        else:
+            super().__init__(
+                model=model_name,
+                device=device,
+                model_prompts=prompts,
+                **kwargs,
+            )
+
+        # Cap max_seq_length to 512 for fair CPU evaluation
+        if hasattr(self.model, "max_seq_length"):
+            self.model.max_seq_length = 512
 
         # Ensure model meta is fully registered for MTEB task scoring
         try:
             self.mteb_model_meta = mteb.get_model_meta(model_name)
+            if self.mteb_model_meta is not None:
+                self.mteb_model_meta = self.mteb_model_meta.model_copy(
+                    update={"name": model_name, "embed_dim": 768, "similarity_fn_name": "cosine"}
+                )
         except Exception:
             if hasattr(self, "mteb_model_meta") and self.mteb_model_meta is not None:
                 self.mteb_model_meta = self.mteb_model_meta.model_copy(
-                    update={"embed_dim": 768, "similarity_fn_name": "cosine"}
+                    update={"name": model_name, "embed_dim": 768, "similarity_fn_name": "cosine"}
+                )
+            else:
+                self.mteb_model_meta = ModelMeta.create_empty(
+                    overwrites=dict(
+                        name=model_name,
+                        embed_dim=768,
+                        similarity_fn_name="cosine",
+                        loader=type(self),
+                    )
                 )
 
     def encode(

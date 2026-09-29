@@ -65,29 +65,44 @@ def run_evaluation(
         json.dump(result_dict, f, indent=2, default=str)
     logger.info("Saved copy of evaluation JSON to: %s", root_json)
 
-    # Extract NDCG@10 and MRR metrics
+    # Extract metrics
     test_scores = result_dict.get("scores", {}).get("test", [])
     ndcg_10 = None
     mrr = None
     recall_10 = None
+    recall_100 = None
+    recall_1000 = None
     if test_scores and isinstance(test_scores, list):
         score_data = test_scores[0]
         ndcg_10 = score_data.get("ndcg_at_10")
         mrr = score_data.get("mrr_at_10") or score_data.get("mrr")
         recall_10 = score_data.get("recall_at_10")
+        recall_100 = score_data.get("recall_at_100")
+        recall_1000 = score_data.get("recall_at_1000")
 
     logger.info("==========================================")
-    logger.info("EXPERIMENT 0 BASELINE RESULTS:")
+    logger.info("MTEB APPSRETRIEVAL EVALUATION RESULTS:")
     logger.info("Task: AppsRetrieval (test split)")
     logger.info("Model: %s", model_name)
-    logger.info("NDCG@10: %s", f"{ndcg_10:.4f}" if ndcg_10 is not None else "N/A")
-    logger.info("MRR: %s", f"{mrr:.4f}" if mrr is not None else "N/A")
-    logger.info("Recall@10: %s", f"{recall_10:.4f}" if recall_10 is not None else "N/A")
-    logger.info("Elapsed time: %.2fs", elapsed_time)
+    logger.info("NDCG@10: %s", f"{ndcg_10:.5f}" if ndcg_10 is not None else "N/A")
+    logger.info("MRR@10: %s", f"{mrr:.5f}" if mrr is not None else "N/A")
+    logger.info("Recall@10: %s", f"{recall_10:.5f}" if recall_10 is not None else "N/A")
+    logger.info("Recall@100: %s", f"{recall_100:.5f}" if recall_100 is not None else "N/A")
+    logger.info("Recall@1000: %s", f"{recall_1000:.5f}" if recall_1000 is not None else "N/A")
+    logger.info("Elapsed time: %.2fs (%.2f mins)", elapsed_time, elapsed_time / 60)
     logger.info("==========================================")
 
     # Update RESULTS.md
-    update_results_md(results_md_path, model_name, ndcg_10, mrr, recall_10, elapsed_time)
+    update_results_md(
+        results_md_path,
+        model_name,
+        ndcg_10,
+        mrr,
+        recall_10,
+        recall_100,
+        recall_1000,
+        elapsed_time,
+    )
 
     return result_dict
 
@@ -98,6 +113,8 @@ def update_results_md(
     ndcg_10: float | None,
     mrr: float | None,
     recall_10: float | None,
+    recall_100: float | None,
+    recall_1000: float | None,
     elapsed_seconds: float,
 ) -> None:
     path = Path(results_path)
@@ -106,23 +123,49 @@ def update_results_md(
     ndcg_str = f"{ndcg_10:.4f}" if ndcg_10 is not None else "N/A"
     mrr_str = f"{mrr:.4f}" if mrr is not None else "N/A"
     recall_str = f"{recall_10:.4f}" if recall_10 is not None else "N/A"
+    r100_str = f"{recall_100:.4f}" if recall_100 is not None else "N/A"
+    r1000_str = f"{recall_1000:.4f}" if recall_1000 is not None else "N/A"
     latency_str = f"{elapsed_seconds:.1f}s"
 
-    content = (
-        "# Experiment Results Log\n\n"
-        "Tracking all iterations against the Experiment 0 floor as mandated by the project architecture.\n\n"
-        "| Exp # | Hypothesis / Description | Model | NDCG@10 | MRR | Recall@10 | Latency | Status |\n"
-        "|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|\n"
-        f"| **0** | Baseline: e5-base-v2, exact cosine retrieval, no preprocessing | `{model_name}` | **{ndcg_str}** | **{mrr_str}** | **{recall_str}** | {latency_str} | Completed |\n"
-    )
+    if path.exists():
+        with open(path, "r", encoding="utf-8") as f:
+            existing_content = f.read()
+    else:
+        existing_content = ""
+
+    # If updating baseline (Exp 0)
+    if "e5-base-v2" in model_name and "Final P0" not in existing_content:
+        content = (
+            "# Experiment Results Log\n\n"
+            "Tracking all iterations against the Experiment 0 floor as mandated by the project architecture.\n\n"
+            "| Exp # | Hypothesis / Description | Model | NDCG@10 | MRR | Recall@10 | Latency | Status |\n"
+            "|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|\n"
+            f"| **0** | Baseline: e5-base-v2, exact cosine retrieval, no preprocessing | `{model_name}` | **{ndcg_str}** | **{mrr_str}** | **{recall_str}** | {latency_str} | Completed |\n"
+        )
+    else:
+        # Appending or updating Final P0 Run section
+        p0_header = "## Final P0 Test Evaluation (Official CoIR Apps Test Split)"
+        p0_section = (
+            f"\n\n{p0_header}\n\n"
+            "Official full-test evaluation via MTEB `AppsRetrieval` comparing the winning embedding model against the Experiment 0 baseline floor.\n\n"
+            "| Evaluation | Model | NDCG@10 | MRR | Recall@10 | Recall@100 | Recall@1000 | Latency | Status |\n"
+            "|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n"
+            "| Experiment 0 (Baseline) | `intfloat/e5-base-v2` | 0.1152 | 0.0988 | 0.1692 | 0.3434 | 0.6813 | 4980.2s | Completed |\n"
+            f"| **Final P0 Run** | `{model_name}` | **{ndcg_str}** | **{mrr_str}** | **{recall_str}** | **{r100_str}** | **{r1000_str}** | {latency_str} | Completed |\n"
+        )
+        if p0_header in existing_content:
+            base_content = existing_content.split(p0_header)[0].rstrip()
+            content = base_content + p0_section
+        else:
+            content = existing_content.rstrip() + p0_section
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
-    logger.info("Updated %s with official baseline results", path)
+    logger.info("Updated %s with evaluation results", path)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run MTEB AppsRetrieval Baseline Evaluation")
+    parser = argparse.ArgumentParser(description="Run MTEB AppsRetrieval Evaluation")
     parser.add_argument("--model", type=str, default="intfloat/e5-base-v2", help="Embedding model name")
     parser.add_argument("--batch-size", type=int, default=64, help="Batch size for encoding")
     parser.add_argument("--output", type=str, default="eval/outputs/appsretrieval_results.json", help="Path to output JSON")

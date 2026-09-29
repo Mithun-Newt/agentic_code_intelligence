@@ -1,0 +1,9 @@
+.venv/
+.git/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.system_generated/
+eval/outputs/appsretrieval_results_baseline.json
