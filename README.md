@@ -6,6 +6,20 @@
 [![CPU Only](https://img.shields.io/badge/Device-CPU_Optimized-orange.svg)](#cpu-requirement)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
 
+> ### 🏆 Samsung PRISM Generative AI Hackathon — Final Submission Details
+> - **Theme ID**: Theme 01 — Agentic Code Intelligence
+> - **Team Name**: **CodeNexus**
+> - **Institution**: **Vellore Institute of Technology**
+> - **Team Members**:
+>   - Mithun Venkatesan (`mithun.venkatesan2023@vitstudent.ac.in`) — Lead
+>   - Kavin M (`kavin.m2023@vitstudent.ac.in`)
+>   - Akhiil Dheep B (`akhiildheep.b2023@vitstudent.ac.in`)
+> - 🎥 **Demo Video (Google Drive)**: **[Watch Demo Video (≤ 5 min)](https://drive.google.com/file/d/1ygrzH9wNctm0r5rT4pi3kkJrUA_bPuJz/view?usp=sharing)**
+> - 📊 **Presentation**: [`submission/CollegeName_TeamName_Submission.pptx`](submission/CollegeName_TeamName_Submission.pptx) | [`submission/CollegeName_TeamName_Submission.pdf`](submission/CollegeName_TeamName_Submission.pdf)
+> - 📝 **AI Disclosure**: [`submission/LangAI3.0_AI_Disclosure_FINAL.docx`](submission/LangAI3.0_AI_Disclosure_FINAL.docx) | [`submission/LangAI3.0_AI_Disclosure_FINAL.pdf`](submission/LangAI3.0_AI_Disclosure_FINAL.pdf)
+> - 🏷️ **Official Git Release Tag**: `PRISM_GENAI_HACKATHON_Y2026`
+> - 🎯 **Locked P0 Test Performance**: NDCG@10 = **0.80492** | MRR@10 = **0.77097** (+598.5% over baseline)
+
 ---
 
 ## 1. Problem Statement
@@ -101,9 +115,18 @@ Evaluated on the full official **CoIR AppsRetrieval** `test` split (3,765 test q
 ├── Dockerfile                          # Minimal reproducible container environment
 ├── .dockerignore                       # Docker build context exclusions
 ├── requirements.txt                    # Pinned, CPU-compatible dependencies
+├── requirement.txt                     # Alias for submission script compatibility
 ├── pytest.ini                          # Automated test discovery configuration
 ├── appsretrieval_results.json          # Official submission test evaluation results
 ├── demo.py                             # Judge-ready CLI interactive code search demo
+├── submission/                         # Submission artifacts (PPT, PDF, AI disclosure)
+│   ├── CollegeName_TeamName_Submission.pptx # Final submission slide deck
+│   ├── CollegeName_TeamName_Submission.pdf  # Exported presentation PDF
+│   ├── LangAI3.0_AI_Disclosure_FINAL.docx   # Completed AI disclosure form
+│   ├── LangAI3.0_AI_Disclosure_FINAL.pdf    # Exported AI disclosure PDF
+│   ├── PPT_CONTENT.md                  # Slide-by-slide verified text draft
+│   ├── AI_DISCLOSURE_DRAFT.md          # Itemized AI usage disclosure draft
+│   └── SUBMISSION_CHECKLIST.md         # Final 10-point submission checklist
 ├── configs/
 │   └── experiment_1_models.yaml        # Model candidate configurations & prompts
 ├── data/
@@ -163,6 +186,8 @@ Evaluated on the full official **CoIR AppsRetrieval** `test` split (3,765 test q
 ---
 
 ## 7. How to Run the Demo
+
+> 🎥 **Demo Video Walkthrough**: A complete 5-minute video demonstration covering problem motivation, architecture, live CLI execution, and official benchmark evaluation is available on Google Drive: **[Watch Demo Video](https://drive.google.com/file/d/1ygrzH9wNctm0r5rT4pi3kkJrUA_bPuJz/view?usp=sharing)**.
 
 The repository includes a clean, standalone CLI demo that indexes the sample corpus and retrieves the top ranked code snippets in real time.
 
