@@ -15,8 +15,8 @@
 >   - Kavin M (`kavin.m2023@vitstudent.ac.in`)
 >   - Akhiil Dheep B (`akhiildheep.b2023@vitstudent.ac.in`)
 > - 🎥 **Demo Video (Google Drive)**: **[Watch Demo Video (≤ 5 min)](https://drive.google.com/file/d/1ygrzH9wNctm0r5rT4pi3kkJrUA_bPuJz/view?usp=sharing)**
-> - 📊 **Presentation**: [`submission/CollegeName_TeamName_Submission.pptx`](submission/CollegeName_TeamName_Submission.pptx) | [`submission/CollegeName_TeamName_Submission.pdf`](submission/CollegeName_TeamName_Submission.pdf)
-> - 📝 **AI Disclosure**: [`submission/LangAI3.0_AI_Disclosure_FINAL.docx`](submission/LangAI3.0_AI_Disclosure_FINAL.docx) | [`submission/LangAI3.0_AI_Disclosure_FINAL.pdf`](submission/LangAI3.0_AI_Disclosure_FINAL.pdf)
+> - 📊 **Presentation**: [`submission/CollegeName_TeamName_Submission.pdf`](submission/CollegeName_TeamName_Submission.pdf) ([PPTX](submission/CollegeName_TeamName_Submission.pptx)) | [`submission/CodeNexus_PRISM_Theme01_Final.pdf`](submission/CodeNexus_PRISM_Theme01_Final.pdf) ([PPTX](submission/CodeNexus_PRISM_Theme01_Final.pptx))
+> - 📝 **AI Disclosure**: [`submission/LangAI3.0_AI_Disclosure.pdf`](submission/LangAI3.0_AI_Disclosure.pdf) ([DOCX](submission/LangAI3.0_AI_Disclosure.docx)) | [`submission/LangAI3.0_AI_Disclosure_FINAL.pdf`](submission/LangAI3.0_AI_Disclosure_FINAL.pdf) ([DOCX](submission/LangAI3.0_AI_Disclosure_FINAL.docx))
 > - 🏷️ **Official Git Release Tag**: `PRISM_GENAI_HACKATHON_Y2026`
 > - 🎯 **Locked P0 Test Performance**: NDCG@10 = **0.80492** | MRR@10 = **0.77097** (+598.5% over baseline)
 
@@ -120,10 +120,14 @@ Evaluated on the full official **CoIR AppsRetrieval** `test` split (3,765 test q
 ├── appsretrieval_results.json          # Official submission test evaluation results
 ├── demo.py                             # Judge-ready CLI interactive code search demo
 ├── submission/                         # Submission artifacts (PPT, PDF, AI disclosure)
-│   ├── CollegeName_TeamName_Submission.pptx # Final submission slide deck
+│   ├── CollegeName_TeamName_Submission.pptx # Official template submission slide deck
 │   ├── CollegeName_TeamName_Submission.pdf  # Exported presentation PDF
-│   ├── LangAI3.0_AI_Disclosure_FINAL.docx   # Completed AI disclosure form
-│   ├── LangAI3.0_AI_Disclosure_FINAL.pdf    # Exported AI disclosure PDF
+│   ├── CodeNexus_PRISM_Theme01_Final.pptx   # CodeNexus team branded slide deck
+│   ├── CodeNexus_PRISM_Theme01_Final.pdf    # Exported CodeNexus presentation PDF
+│   ├── LangAI3.0_AI_Disclosure.docx        # Completed AI disclosure form
+│   ├── LangAI3.0_AI_Disclosure.pdf         # Exported AI disclosure PDF
+│   ├── LangAI3.0_AI_Disclosure_FINAL.docx   # Completed AI disclosure form (alias)
+│   ├── LangAI3.0_AI_Disclosure_FINAL.pdf    # Exported AI disclosure PDF (alias)
 │   ├── PPT_CONTENT.md                  # Slide-by-slide verified text draft
 │   ├── AI_DISCLOSURE_DRAFT.md          # Itemized AI usage disclosure draft
 │   └── SUBMISSION_CHECKLIST.md         # Final 10-point submission checklist
